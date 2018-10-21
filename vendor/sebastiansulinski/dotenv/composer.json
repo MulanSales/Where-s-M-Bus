@@ -1,0 +1,28 @@
+{
+    "name": "sebastiansulinski/dotenv",
+    "description": "DotEnv package - work derived from vlucas/phpdotenv",
+    "license": "BSD",
+    "authors": [
+        {
+            "name": "Sebastian Sulinski",
+            "email": "info@ssdtutorials.com"
+        }
+    ],
+    "minimum-stability": "beta",
+    "require": {
+        "php": "^7.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "SSD\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SSDTest\\": "tests/"
+        }
+    }
+}

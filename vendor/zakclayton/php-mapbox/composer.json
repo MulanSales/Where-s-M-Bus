@@ -1,0 +1,51 @@
+{
+    "name": "zakclayton/php-mapbox",
+    "type": "library",
+    "description": "A PHP Wrapper for the Mapbox JS cURL API",
+    "keywords": [
+        "mapbox",
+        "mapbox API"
+    ],
+    "homepage": "https://github.com/:vendor/:package_name",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Zak Clayton",
+            "email": "zak@24kdesign.co.uk",
+            "homepage": "https://zakclayton.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "~5.6|~7.0",
+        "guzzlehttp/guzzle": "^6.3",
+        "sebastiansulinski/dotenv": "^1.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : ">=5.4.3",
+        "squizlabs/php_codesniffer": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "ZakClayton\\Mapbox\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ZakClayton\\Mapbox\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "check-style": "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
+        "fix-style": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

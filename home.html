@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>WHERE'S M'BUS? - Home</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js'></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+    <script type="text/javascript" src="js/functions.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" type="text/css" href="/css/home.css">
+</head>
+<body>
+<div class="wrap">
+    <div class="logoIcon">
+        <img src="assets/imgs/gps.png" width="30" height="40">
+        <p class="textIcon">WHERE'S M'BUS?</p>
+    </div>
+    <div class="search">
+        <input type="text" id="input" class="searchTerm" placeholder="Input the start point address">
+        <button type="submit" id="getEnderecoBtn" class="searchButton" onclick="getEnderecos()">
+            <i class="fa fa-search"></i>
+        </button>
+    </div>
+</div>
+
+<div id="enderecos_modal" class="w3-modal">
+    <div class="w3-modal-content w3-card-4">
+    <header class="w3-container w3-tealc"> 
+        <span onclick="document.getElementById('enderecos_modal').style.display='none'" 
+        class="w3-button w3-display-topright">&times;</span>
+        <h2>Lista de Locais Encontrados</h2>
+    </header>
+    <br>
+    <div id="enderecos_list" class="w3-container">
+    </div>
+    <footer class="w3-container w3-teal"></footer>
+    </div>
+</div>
+
+<div class="opt">
+    <label class="container"> Mostrar Linhas
+        <input type="radio" onclick="plotLinhas()" name="option">
+        <span class="checkmark"></span>
+    </label>
+    <label class="container"> Mostrar Paradas
+        <input type="radio" name="option" onclick="plotParadas()">
+        <span class="checkmark"></span>
+    </label>
+</div>
+
+<div class="info">
+    <p id="rcorners">
+        <i class="fa fa-address-card-o"></i><br>
+        Nome: Luan M. Sales<br>
+        NºUSP: 9277468<br>
+        Sem.: 2º/2018
+    </p>
+</div>
+
+<div id="update-div" hidden class="upt">
+    <button class="btn" onclick="updateMap()"><i class="fa fa-refresh"></i> Atualizar</button>  
+</div>
+
+
+<div id='map'></div>
+
+<div class="footer">
+    <p>ACH2077[2018] - Soluções Web Baseadas em Software Livre</p>
+</div>      
+
+<script>
+
+var iEnd = localStorage.getItem("iEndereco");
+
+if(iEnd != null)
+{
+    document.getElementById('input').value = iEnd;
+    document.getElementById('getEnderecoBtn').click();
+    localStorage.removeItem("iEndereco");
+    document.getElementById('enderecos_modal').style.display='block';
+}
+
+closeModal();
+
+mapboxgl.accessToken = 'pk.eyJ1IjoibXVsYW5zYWxlcyIsImEiOiJjam44eGxnbTkwaWQwM3Fud3FkdTJxNnJrIn0.RzA6ZoACN112nCb10JqDlw';
+
+var map = new mapboxgl.Map({
+    container: 'map', 
+    style: 'mapbox://styles/mapbox/streets-v9', 
+    center: [-46.672727, -23.592938],
+    zoom: 16 
+});
+
+map.addControl(new mapboxgl.NavigationControl());
+
+</script>
+
+</body>
+</html>
