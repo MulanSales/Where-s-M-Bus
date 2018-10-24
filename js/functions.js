@@ -7,69 +7,76 @@ function setEndereco()
 
 function getEnderecos()
 {
-    //Open Modal
-    document.getElementById('enderecos_modal').style.display='block'
-
     var end = document.getElementById("input").value;
     var result;
-    
-    $.ajax({
-        type: 'POST',
-        data: { endereco: end },
-        url: 'api/[POST]enderecos.php',
-        dataType: 'json',
-        async: false,
 
-        success: function(r){
-            try {
-                result = JSON.parse(r);
-            } catch (error) {
-                window.alert("Erro : Endereço não encontrado");
-            }
-        },
-        error: function(e){
-            window.alert("Erro : Algum erro ocorreu");
-        }
-    });
-
-
-    var element = document.getElementById("enderecos_list");
-    while (element.firstChild) {
-        element.removeChild(element.firstChild);
-    }
-
-    for(var i = 0; i < result.length; i++)
+    if(end == "")
     {
-        var label = document.createElement("label");
-        var input = document.createElement("input");
-        input.type = "radio";
-        input.name = "endereco";
-        input.value = result[i].endereco + "|" + result[i].latitude + "|" + result[i].longitude;
-        var text = document.createTextNode(" " + result[i].endereco);
-        label.appendChild(input);
-        label.appendChild(text);
+        map = new mapboxgl.Map({
+            container: 'map', 
+            style: 'mapbox://styles/mapbox/streets-v9', 
+            center: [-46.672727, -23.592938],
+            zoom: 16 
+        });
+        
+        map.addControl(new mapboxgl.NavigationControl());
 
-        element.appendChild(label);
-        element.appendChild(document.createElement("br"));
-
+        return;
     }
-            
-    var confimationButton = document.createElement("button");   
-    confimationButton.textContent = "Confirmar";
-    confimationButton.id = "mapButton";
-    confimationButton.className = "btn";
-    confimationButton.onclick = function() { plotEndereco(); };
-
-    element.appendChild(confimationButton);
-
-    map = new mapboxgl.Map({
-        container: 'map', 
-        style: 'mapbox://styles/mapbox/streets-v9', 
-        center: [-46.672727, -23.592938],
-        zoom: 16 
-    });
+    else
+    {
+        //Open Modal
+        document.getElementById('enderecos_modal').style.display='block'
+        
+        $.ajax({
+            type: 'POST',
+            data: { endereco: end },
+            url: 'api/[POST]enderecos.php',
+            dataType: 'json',
+            async: false,
     
-    map.addControl(new mapboxgl.NavigationControl());
+            success: function(r){
+                try {
+                    result = JSON.parse(r);
+                } catch (error) {
+                    window.alert("Erro : Endereço não encontrado");
+                }
+            },
+            error: function(e){
+                window.alert("Erro : Algum erro ocorreu");
+            }
+        });
+    
+    
+        var element = document.getElementById("enderecos_list");
+        while (element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
+    
+        for(var i = 0; i < result.length; i++)
+        {
+            var label = document.createElement("label");
+            var input = document.createElement("input");
+            input.type = "radio";
+            input.name = "endereco";
+            input.value = result[i].endereco + "|" + result[i].latitude + "|" + result[i].longitude;
+            var text = document.createTextNode(" " + result[i].endereco);
+            label.appendChild(input);
+            label.appendChild(text);
+    
+            element.appendChild(label);
+            element.appendChild(document.createElement("br"));
+    
+        }
+                
+        var confimationButton = document.createElement("button");   
+        confimationButton.textContent = "Confirmar";
+        confimationButton.id = "mapButton";
+        confimationButton.className = "btn";
+        confimationButton.onclick = function() { plotEndereco(); };
+    
+        element.appendChild(confimationButton);
+    }  
 }
 
 function closeModal()
@@ -84,17 +91,38 @@ function closeModal()
     }
 }
 
-function plotEndereco()
+function plotEndereco(lat, lng)
 {
     //Close modal if open
     document.getElementById('enderecos_modal').style.display = "none";  
 
-    var endereco = document.querySelector('input[name=endereco]:checked');
-    var item = endereco.value.split("|"); 
+    var end;
+    var iniLat;
+    var iniLng;
 
-    var end = item[0];
-    var iniLat = item[1];
-    var iniLng = item[2];
+    if(lat != null)
+    {
+        end = "Você está aqui!"
+        var iniLat = lat
+        var iniLng = lng
+    }
+    else
+    {
+        var endereco = document.querySelector('input[name=endereco]:checked');
+        var item = endereco.value.split("|"); 
+        var end = item[0];
+        var iniLat = item[1];
+        var iniLng = item[2];
+
+        map = new mapboxgl.Map({
+            container: 'map', 
+            style: 'mapbox://styles/mapbox/streets-v9', 
+            center: [iniLng, iniLat],
+            zoom: 16 
+        });
+    
+        map.addControl(new mapboxgl.NavigationControl());
+    }
 
     map.flyTo({center: [iniLng, iniLat]});
  

@@ -20,6 +20,10 @@ header("Content-Type: application/json; charset=UTF-8");
 * Retrieves data from get request
 */
 
+/*Error Log
+* error_log(print_r($value, true));
+*/
+
 $end = $_POST['endereco'];
 
 $dbset = new DbSet();
@@ -46,7 +50,6 @@ foreach($result as $value)
         $jsonRes .= "{ \"endereco\": \"$end\", \"latitude\": \"$lat\", \"longitude\": \"$lng\" },";
 
     array_push($array_values, $end);
-    error_log(print_r($array_values, true));
 }
 
 $jsonRes = substr($jsonRes, 0, -1);
