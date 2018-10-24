@@ -40,7 +40,7 @@
     </div>
 </div>
 
-<div class="opt">
+<div id="divOption" class="opt">
     <label class="container"> Mostrar Linhas
         <input type="radio" onclick="plotLinhas()" name="option">
         <span class="checkmark"></span>
@@ -75,7 +75,7 @@
 
 var iEnd = localStorage.getItem("iEndereco");
 
-if(iEnd != null)
+if(iEnd != null && iEnd != "")
 {
     document.getElementById('input').value = iEnd;
     document.getElementById('getEnderecoBtn').click();
@@ -87,14 +87,40 @@ closeModal();
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibXVsYW5zYWxlcyIsImEiOiJjam44eGxnbTkwaWQwM3Fud3FkdTJxNnJrIn0.RzA6ZoACN112nCb10JqDlw';
 
-var map = new mapboxgl.Map({
-    container: 'map', 
-    style: 'mapbox://styles/mapbox/streets-v9', 
-    center: [-46.672727, -23.592938],
-    zoom: 16 
-});
+// Custom coordinates values
+var longitude = -46.672727;
+var latitude = -23.592938;
 
-map.addControl(new mapboxgl.NavigationControl());
+// If geolocation is enabled
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        function(position){
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+
+            map = new mapboxgl.Map({
+                container: 'map', 
+                style: 'mapbox://styles/mapbox/streets-v9', 
+                center: [longitude, latitude],
+                zoom: 15
+            });
+
+            map.flyTo({center: [longitude, latitude]});
+
+            map.addControl(new mapboxgl.NavigationControl());
+
+            plotEndereco(latitude, longitude);
+        }
+    );
+}
+else{
+    map = new mapboxgl.Map({
+        container: 'map', 
+        style: 'mapbox://styles/mapbox/streets-v9', 
+        zoom: 15
+    });
+
+}
 
 </script>
 
