@@ -107,6 +107,8 @@ body{
     height: 150px; 
     font-family: monospace;
     font-size: 14px;
+    float: right;
+    margin: 0 5px;
 } 
 
 .container {
