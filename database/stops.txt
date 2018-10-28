@@ -1,4 +1,4 @@
-stop_id,"stop_name","stop_desc",stop_lat,stop_lon
+id,"endereco","descricao",latitude,longitude
 18848,"Clínicas","",-23.554190,-46.670723
 18849,"Vila Madalena","",-23.546720,-46.690738
 18850,"Consolação","",-23.557503,-46.660870

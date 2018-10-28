@@ -30,11 +30,17 @@ $dbset = new DbSet();
 
 $conn = $dbset->connect();
 
-$result = $dbset->doSqlQuery($conn, 
+$result = $dbset->doSqlQuery($conn,
 "SELECT endereco, latitude, longitude
-    FROM Paradas 
+    FROM Paradas
     WHERE endereco LIKE '%$end%'");
 $dbset->closeConnection($conn);
+
+if(!$result){
+    echo(mysqli_error($conn));
+    exit();
+}
+
 
 $array_values = array();
 
