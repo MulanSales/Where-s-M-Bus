@@ -44,7 +44,7 @@ if(!$result){
 
 $array_values = array();
 
-$jsonRes = "[";
+$jsonRes = "[ ";
 
 foreach($result as $value)
 {

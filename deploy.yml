@@ -1,0 +1,7 @@
+---
+- hosts: all
+  remote_user: g6
+  tasks:
+    - git:
+        repo: https://github.com/hugoboleta/Where-s-M-Bus.git
+        dest: ~/web/html
