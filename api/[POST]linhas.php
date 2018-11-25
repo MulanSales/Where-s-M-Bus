@@ -47,7 +47,6 @@ $linhas = json_decode($linhas, true);
 $mapFactory = new MapFactory();
 $jsonResp = $mapFactory->makePositionLayerJson($linhas, $latMin, $latMax, $longMin, $longMax);
 
-error_log(print_r($jsonResp, true));
 /* Return
 * Retorna os pontos com os onibus presentes no mapa no momento
 */

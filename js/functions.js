@@ -1,6 +1,4 @@
-function setEndereco() {
-    localStorage.setItem("iEndereco", document.getElementById('initialInput').value);
-
+function goToHome() {
     window.location.replace('home.html');
 }
 
@@ -46,36 +44,38 @@ function getEnderecos() {
                 window.alert("Erro : Algum erro ocorreu");
             }
         });
+
+
+        var element = document.getElementById("enderecos_list");
+        while (element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
+
+        for (var i = 0; i < result.length; i++) {
+            var label = document.createElement("label");
+            var input = document.createElement("input");
+            input.type = "radio";
+            input.name = "endereco";
+            input.value = result[i].endereco + "|" + result[i].latitude + "|" + result[i].longitude;
+            var text = document.createTextNode(" " + result[i].endereco);
+            label.appendChild(input);
+            label.appendChild(text);
+
+            element.appendChild(label);
+            element.appendChild(document.createElement("br"));
+
+        }
+
+        var confimationButton = document.createElement("button");
+        confimationButton.textContent = "Confirmar";
+        confimationButton.id = "mapButton";
+        confimationButton.className = "btn";
+        confimationButton.onclick = function() {
+            plotEndereco();
+        };
+
+        element.appendChild(confimationButton);
     }
-}
-
-function showAddressSelectModal(result) {
-    var element = document.getElementById("enderecos_list");
-    while (element.firstChild)
-        element.removeChild(element.firstChild);
-    for (var i = 0; i < result.length; i++) {
-        var label = document.createElement("label");
-        var input = document.createElement("input");
-        input.type = "radio";
-        input.name = "endereco";
-        input.value = result[i].endereco + "|" + result[i].latitude + "|" + result[i].longitude;
-        var text = document.createTextNode(" " + result[i].endereco);
-        label.appendChild(input);
-        label.appendChild(text);
-
-        element.appendChild(label);
-        element.appendChild(document.createElement("br"));
-    }
-
-    var confimationButton = document.createElement("button");
-    confimationButton.textContent = "Confirmar";
-    confimationButton.id = "mapButton";
-    confimationButton.className = "btn";
-    confimationButton.onclick = function() {
-        plotEndereco();
-    };
-
-    element.appendChild(confimationButton);
 }
 
 function closeModal() {
@@ -117,10 +117,11 @@ function plotEndereco(lat, lng) {
         });
 
         map.addControl(new mapboxgl.NavigationControl());
-        map.on('load', function(){
-            mapFlyTo(map, [iniLng, iniLat])
-        })
     }
+
+    map.flyTo({
+        center: [iniLng, iniLat]
+    });
 
     map.loadImage('/assets/imgs/star.png', function(error, image) {
         if (error) throw error;
@@ -166,31 +167,13 @@ function plotEndereco(lat, lng) {
     });
 }
 
-function mapFlyTo(map, coords){
-    map.flyTo({
-        center: coords
-    })
-}
-
-function plotLinhas() {
-    var mapLayer = map.getLayer('bus');
+function plotLinhas(lat, lng) {
+    removeLayers();
 
     document.getElementById('update-div').style.display = 'block';
 
-    if (typeof mapLayer !== 'undefined')
-        return;
-
-    var endereco = document.querySelector('input[name=endereco]:checked');
-
-    try {
-        var item = endereco.value.split("|");
-    } catch (error) {
-        alert(error);
-        return;
-    }
-
-    var iniLat = item[1];
-    var iniLng = item[2];
+    var iniLat = lat;
+    var iniLng = lng;
 
     var linhacoords;
 
@@ -206,6 +189,7 @@ function plotLinhas() {
 
         success: function(result) {
             try {
+                result = JSON.stringify(result)
                 linhacoords = JSON.parse(result);
             } catch (error) {
                 window.alert("Erro : Linhas de ônibus não encontradas");
@@ -242,28 +226,20 @@ function plotLinhas() {
     });
 }
 
-function plotParadas() {
+function plotParadas(lat, lng) {
 
-    var mapLayer = map.getLayer('stops');
-
-    if (typeof mapLayer !== 'undefined')
-        return;
+    removeLayers();
 
     document.getElementById('update-div').style.display = 'none';
 
-    var endereco = document.querySelector('input[name=endereco]:checked');
-    var item = endereco.value.split("|");
-
-    var end = item[0];
-    var iniLat = item[1];
-    var iniLng = item[2];
+    var iniLat = lat
+    var iniLng = lng
 
     var paradas;
 
     $.ajax({
         type: 'POST',
         data: {
-            endereco: end,
             latitude: iniLat,
             longitude: iniLng
         },
@@ -273,7 +249,7 @@ function plotParadas() {
 
         success: function(result) {
             try {
-                paradas = JSON.parse(result);
+                paradas = result;
             } catch (error) {
                 window.alert("Erro : Paradas de ônibus não encontradas");
             }
@@ -290,10 +266,12 @@ function plotParadas() {
         map.addLayer(paradas);
     });
 
+    console.log()
+
     map.on('click', 'stops', function(e) {
         new mapboxgl.Popup()
             .setLngLat(e.lngLat)
-            .setHTML(e.features[0].properties.codigo + " - " + e.features[0].properties.endereco + " - ")
+            .setHTML(e.features[0].properties.codigo + " - " + e.features[0].properties.endereco + " - " + e.features[0].properties.referencia)
             .addTo(map);
         map.flyTo({
             center: e.features[0].geometry.coordinates
@@ -309,27 +287,43 @@ function plotParadas() {
     });
 }
 
-function updateMap() {
-    var endereco = document.querySelector('input[name=endereco]:checked');
-    var item = endereco.value.split("|");
+function updateMap(lat, lng) {
+    removeLayers();
 
-    var iniLat = item[1];
-    var iniLng = item[2];
+    plotLinhas(lat, lng);
+}
 
-    map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v9',
-        center: [iniLng, iniLat],
+function centralizeMap(lat, lng) {
+    removeLayers();
+
+    var ele = document.getElementsByName("option");
+    for (var i = 0; i < ele.length; i++)
+        ele[i].checked = false;
+
+    document.getElementById('update-div').style.display = 'none';
+
+    map.flyTo({
+        center: [lng, lat],
         zoom: 16
     });
 
-    map.addControl(new mapboxgl.NavigationControl());
+    longitude = lng;
+    latitude = lat;
+}
 
-    var mapLayer = map.getLayer('star');
+function removeLayers() {
+    var mapLayerI = map.getLayer('stops');
+    var mapLayerII = map.getLayer('bus');
 
-    if (typeof mapLayer === 'undefined')
-        plotEndereco();
+    if (typeof mapLayerI !== 'undefined') {
+        map.removeLayer('stops');
+        map.removeSource('stops');
+        map.removeImage('stops');
+    }
 
-    plotLinhas();
-
+    if (typeof mapLayerII !== 'undefined') {
+        map.removeLayer('bus');
+        map.removeSource('bus');
+        map.removeImage('bus');
+    }
 }

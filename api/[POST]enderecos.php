@@ -30,9 +30,9 @@ $dbset = new DbSet();
 
 $conn = $dbset->connect();
 
-$result = $dbset->doSqlQuery($conn,
+$result = $dbset->doSqlQuery($conn, 
 "SELECT endereco, latitude, longitude
-    FROM Paradas
+    FROM Paradas 
     WHERE endereco LIKE '%$end%'");
 $dbset->closeConnection($conn);
 
@@ -44,7 +44,7 @@ if(!$result){
 
 $array_values = array();
 
-$jsonRes = "[ ";
+$jsonRes = "[";
 
 foreach($result as $value)
 {
@@ -61,8 +61,8 @@ foreach($result as $value)
 $jsonRes = substr($jsonRes, 0, -1);
 $jsonRes .= "]";
 
-http_response_code(200);
-$jsonRes = json_encode($jsonRes);
+//http_response_code(200);
+//$jsonRes = json_encode($jsonRes);
 
 echo $jsonRes;
 
