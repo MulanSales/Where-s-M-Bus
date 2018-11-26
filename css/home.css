@@ -1,4 +1,3 @@
-
 #map {
     position: absolute;
     width: 100%;
@@ -6,7 +5,7 @@
     top: 28.5%;
 }
 
-body{
+body {
     background-image: url('/assets/imgs/background.jpg');
 }
 
@@ -26,7 +25,7 @@ body{
     background-color: black;
 }
 
-.searchTerm:focus{ 
+.searchTerm:focus {
     color: whitesmoke;
 }
 
@@ -59,7 +58,7 @@ body{
     left: -13%;
 }
 
-.textIcon{
+.textIcon {
     font-family: monospace;
     font-size: 10px;
     color: whitesmoke;
@@ -81,7 +80,7 @@ body{
     font-family: monospace;
 }
 
-.btn{
+.btn {
     background-color: #00b4cc;
     color: white;
 }
@@ -92,23 +91,35 @@ body{
     top: 0%;
 }
 
-.w3-tealc{
+.w3-tealc {
     background-color: #00b4cc;
     color: azure;
     font-family: monospace;
 }
 
 #rcorners {
-    border-radius: 15px 50px;
+    border-radius: 15px 0 0 50px;
     background: #00B4CC;
-    padding: 20px; 
+    padding: 20px;
     width: 200px;
-    height: 150px; 
+    height: 150px;
     font-family: monospace;
     font-size: 14px;
     float: left;
     margin-left: 5px;
-} 
+}
+
+#rcornersright {
+    border-radius: 0 15px 50px 0;
+    background: #00B4CC;
+    padding: 20px;
+    width: 200px;
+    height: 150px;
+    font-family: monospace;
+    font-size: 14px;
+    float: left;
+    margin-left: 5px;
+}
 
 .container {
     font-family: monospace;
@@ -141,11 +152,11 @@ body{
     border-radius: 50%;
 }
 
-.container:hover input ~ .checkmark {
+.container:hover input~.checkmark {
     background-color: #ccc;
 }
 
-.container input:checked ~ .checkmark {
+.container input:checked~.checkmark {
     background-color: #00b4cc;
 }
 
@@ -155,7 +166,7 @@ body{
     display: none;
 }
 
-.container input:checked ~ .checkmark:after {
+.container input:checked~.checkmark:after {
     display: block;
 }
 
@@ -180,9 +191,9 @@ body{
     background-color: #00B4CC;
     color: black;
     text-align: center;
- }
+}
 
- .geocoder {
+.geocoder {
     position: absolute;
     z-index: 1;
     width: 20%;
@@ -193,4 +204,7 @@ body{
     border-radius: 5px;
     outline: none;
 }
-.mapboxgl-ctrl-geocoder { min-width:100%; }
+
+.mapboxgl-ctrl-geocoder {
+    min-width: 100%;
+}

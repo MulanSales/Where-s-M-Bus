@@ -30,11 +30,11 @@
 
     <div id="divOption" class="opt">
         <label class="container"> Mostrar Linhas
-            <input type="checkbox" onclick="plotLinhas(this.checked, latitude, longitude)" name="option">
+            <input type="checkbox" onclick="plotLinhas(this.checked, latitude, longitude)" name="options">
             <span class="checkmark"></span>
         </label>
         <label class="container"> Mostrar Paradas
-            <input type="checkbox" onclick="plotParadas(this.checked, latitude, longitude)">
+            <input type="checkbox" onclick="plotParadas(this.checked, latitude, longitude)" name="options">
             <span class="checkmark"></span>
         </label>
     </div>
@@ -46,7 +46,7 @@
             NºUSP: 9277468<br>
             Sem.: 2º/2018
         </p>
-        <p id="rcorners">
+        <p id="rcornersright">
             <i class="fa fa-address-card-o"></i><br>
             Nome: Hugo Boleta<br>
             NºUSP: 7650972<br>
@@ -143,9 +143,12 @@
                             latitude = ev.result.center[1];
 
                             document.getElementById('update-div').style.display = 'none';
-                            var radio = document.getElementsByName("option");
+                            var radio = document.getElementsByName("options");
                             for (var i = 0; i < radio.length; i++)
                                 radio[i].checked = false;
+
+                            plotLinhas(false)
+                            plotParadas(false)
                         });
                     });
                 }
