@@ -31,7 +31,7 @@ function getEnderecos() {
             success: function(r) {
                 try {
                     result = JSON.parse(r);
-                    if (!result){
+                    if (!result) {
                         window.alert("Erro : Endereço não encontrado");
                         return
                     }
@@ -167,8 +167,10 @@ function plotEndereco(lat, lng) {
     });
 }
 
-function plotLinhas(lat, lng) {
-    removeLayers();
+function plotLinhas(enabled, lat, lng) {
+    removeLayers(true, false);
+    document.getElementById('update-div').style.display = 'none';
+    if (!enabled) return
 
     document.getElementById('update-div').style.display = 'block';
 
@@ -185,15 +187,39 @@ function plotLinhas(lat, lng) {
         },
         url: 'api/[POST]linhas.php',
         dataType: 'json',
-        async: false,
-
         success: function(result) {
             try {
                 result = JSON.stringify(result)
                 linhacoords = JSON.parse(result);
+
             } catch (error) {
                 window.alert("Erro : Linhas de ônibus não encontradas");
+                return
             }
+
+            map.loadImage('/assets/imgs/bus.png', function(error, image) {
+                if (error) throw error;
+                map.addImage('bus', image);
+                map.addLayer(linhacoords);
+            });
+
+            map.on('click', 'bus', function(e) {
+                new mapboxgl.Popup()
+                    .setLngLat(e.lngLat)
+                    .setHTML(e.features[0].properties.lineCode + ": " + e.features[0].properties.lineName0 + " - " + e.features[0].properties.lineName1)
+                    .addTo(map);
+                map.flyTo({
+                    center: e.features[0].geometry.coordinates
+                });
+            });
+
+            map.on('mouseenter', 'bus', function() {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+
+            map.on('mouseleave', 'bus', function() {
+                map.getCanvas().style.cursor = '';
+            });
         },
 
         error: function() {
@@ -201,34 +227,14 @@ function plotLinhas(lat, lng) {
         }
     });
 
-    map.loadImage('/assets/imgs/bus.png', function(error, image) {
-        if (error) throw error;
-        map.addImage('bus', image);
-        map.addLayer(linhacoords);
-    });
-
-    map.on('click', 'bus', function(e) {
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(e.features[0].properties.lineCode + ": " + e.features[0].properties.lineName0 + " - " + e.features[0].properties.lineName1)
-            .addTo(map);
-        map.flyTo({
-            center: e.features[0].geometry.coordinates
-        });
-    });
-
-    map.on('mouseenter', 'bus', function() {
-        map.getCanvas().style.cursor = 'pointer';
-    });
-
-    map.on('mouseleave', 'bus', function() {
-        map.getCanvas().style.cursor = '';
-    });
 }
 
-function plotParadas(lat, lng) {
+function plotParadas(enabled, lat, lng) {
 
-    removeLayers();
+    removeLayers(false, true);
+
+    document.getElementById('update-div').style.display = 'none';
+    if (!enabled) return
 
     document.getElementById('update-div').style.display = 'none';
 
@@ -245,14 +251,39 @@ function plotParadas(lat, lng) {
         },
         url: 'api/[POST]paradas.php',
         dataType: 'json',
-        async: false,
 
         success: function(result) {
             try {
                 paradas = result;
             } catch (error) {
                 window.alert("Erro : Paradas de ônibus não encontradas");
+                return
             }
+            map.loadImage('/assets/imgs/stops.png', function(error, image) {
+                if (error) throw error;
+                map.addImage('stops', image);
+                map.addLayer(paradas);
+            });
+
+            console.log()
+
+            map.on('click', 'stops', function(e) {
+                new mapboxgl.Popup()
+                    .setLngLat(e.lngLat)
+                    .setHTML(e.features[0].properties.codigo + " - " + e.features[0].properties.endereco + " - " + e.features[0].properties.referencia)
+                    .addTo(map);
+                map.flyTo({
+                    center: e.features[0].geometry.coordinates
+                });
+            });
+
+            map.on('mouseenter', 'stops', function() {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+
+            map.on('mouseleave', 'stops', function() {
+                map.getCanvas().style.cursor = '';
+            });
         },
 
         error: function() {
@@ -260,31 +291,6 @@ function plotParadas(lat, lng) {
         }
     });
 
-    map.loadImage('/assets/imgs/stops.png', function(error, image) {
-        if (error) throw error;
-        map.addImage('stops', image);
-        map.addLayer(paradas);
-    });
-
-    console.log()
-
-    map.on('click', 'stops', function(e) {
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(e.features[0].properties.codigo + " - " + e.features[0].properties.endereco + " - " + e.features[0].properties.referencia)
-            .addTo(map);
-        map.flyTo({
-            center: e.features[0].geometry.coordinates
-        });
-    });
-
-    map.on('mouseenter', 'stops', function() {
-        map.getCanvas().style.cursor = 'pointer';
-    });
-
-    map.on('mouseleave', 'stops', function() {
-        map.getCanvas().style.cursor = '';
-    });
 }
 
 function updateMap(lat, lng) {
@@ -311,19 +317,20 @@ function centralizeMap(lat, lng) {
     latitude = lat;
 }
 
-function removeLayers() {
-    var mapLayerI = map.getLayer('stops');
-    var mapLayerII = map.getLayer('bus');
+function removeLayers(skipStops, skipBus) {
+    try {
+        if (!skipStops && map.getLayer('stops')) {
+            map.removeLayer('stops');
+            map.removeSource('stops');
+            map.removeImage('stops');
+        }
+    } catch (err) {}
 
-    if (typeof mapLayerI !== 'undefined') {
-        map.removeLayer('stops');
-        map.removeSource('stops');
-        map.removeImage('stops');
-    }
-
-    if (typeof mapLayerII !== 'undefined') {
-        map.removeLayer('bus');
-        map.removeSource('bus');
-        map.removeImage('bus');
-    }
+    try {
+        if (!skipBus && map.getLayer('stops')) {
+            map.removeLayer('bus');
+            map.removeSource('bus');
+            map.removeImage('bus');
+        }
+    } catch (err) {}
 }

@@ -30,11 +30,11 @@
 
     <div id="divOption" class="opt">
         <label class="container"> Mostrar Linhas
-            <input type="radio" onclick="plotLinhas(latitude, longitude)" name="option">
+            <input type="checkbox" onclick="plotLinhas(this.checked, latitude, longitude)" name="option">
             <span class="checkmark"></span>
         </label>
         <label class="container"> Mostrar Paradas
-            <input type="radio" name="option" onclick="plotParadas(latitude, longitude)">
+            <input type="checkbox" name="option" onclick="plotParadas(this.checked, latitude, longitude)">
             <span class="checkmark"></span>
         </label>
     </div>
