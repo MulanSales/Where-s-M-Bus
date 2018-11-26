@@ -341,3 +341,122 @@ function removeLayers(skipStops, skipBus) {
         }
     } catch (err) {}
 }
+
+//Main
+
+mapboxgl.accessToken = 'pk.eyJ1IjoibXVsYW5zYWxlcyIsImEiOiJjam44eGxnbTkwaWQwM3Fud3FkdTJxNnJrIn0.RzA6ZoACN112nCb10JqDlw';
+
+var geolocation = new mapboxgl.GeolocateControl();
+
+var oLatitude;
+var oLongitude;
+
+var latitude;
+var longitude;
+
+// If geolocation is enabled
+function onLocation(position, hide) {
+    latitude = position.coords.latitude;
+    oLatitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+    oLongitude = position.coords.longitude;
+
+    map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v9',
+        center: [longitude, latitude],
+        zoom: 12
+    });
+
+    if (hide) {
+        document.getElementById('map').style.display = 'none'
+        document.getElementById('divOption').style.display = 'none'
+    } else {
+        document.getElementById('map').style.display = 'block'
+        document.getElementById('divOption').style.display = 'block'
+    }
+
+    map.addControl(new mapboxgl.NavigationControl());
+
+    var scale = new mapboxgl.ScaleControl({
+        maxWidth: 80,
+        unit: 'metric'
+    });
+    map.addControl(scale);
+
+    map.addControl(geolocation);
+
+    map.flyTo({
+        center: [longitude, latitude],
+        zoom: 12
+    });
+
+    var geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        country: "br",
+        // Itapevi, Franco da Rocha, Mogi das Cruzes, Cubatão
+        bbox: [-46.93416666666666, -23.895, -46.1883333333333, -23.30527777777778]
+    });
+
+    document.getElementById('search').appendChild(geocoder.onAdd(map));
+
+    map.on('load', function() {
+        map.addSource('single-point', {
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": []
+            }
+        });
+
+        map.addLayer({
+            "id": "single",
+            "source": "single-point",
+            "type": "circle",
+            "paint": {
+                "circle-radius": 10,
+                "circle-color": "#00B4CC"
+            }
+        });
+
+        geocoder.on('result', function(ev) {
+            document.getElementById('map').style.display = 'block'
+            document.getElementById('divOption').style.display = 'block'
+
+            map.getSource('single-point').setData(null);
+            map.getSource('single-point').setData(ev.result.geometry);
+
+            longitude = ev.result.center[0];
+            latitude = ev.result.center[1];
+
+            document.getElementById('update-div').style.display = 'none';
+            var radio = document.getElementsByName("options");
+            for (var i = 0; i < radio.length; i++)
+                radio[i].checked = false;
+
+            plotLinhas(false)
+            plotParadas(false)
+        });
+    });
+}
+
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        onLocation,
+        function() {
+            onLocation({
+                    coords: {
+                        latitude: -23.4821695,
+                        longitude: -46.5018568
+                    }
+                },
+                true)
+        });
+}
+
+geolocation.on('geolocate', function(e) {
+    map.flyTo({
+        center: [longitude, latitude],
+        zoom: 16 //set zoom
+    });
+});
