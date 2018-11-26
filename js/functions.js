@@ -301,9 +301,8 @@ function plotParadas(enabled, lat, lng) {
 }
 
 function updateMap(lat, lng) {
-    removeLayers();
-
-    plotLinhas(lat, lng);
+    removeLayers(true, false);
+    plotLinhas(true, lat, lng);
 }
 
 function centralizeMap(lat, lng) {
@@ -420,8 +419,6 @@ function onLocation(position, hide) {
         });
 
         geocoder.on('result', function(ev) {
-            document.getElementById('map').style.display = 'block'
-            document.getElementById('divOption').style.display = 'block'
 
             map.getSource('single-point').setData(null);
             map.getSource('single-point').setData(ev.result.geometry);
@@ -430,9 +427,8 @@ function onLocation(position, hide) {
             latitude = ev.result.center[1];
 
             document.getElementById('update-div').style.display = 'none';
-            var radio = document.getElementsByName("options");
-            for (var i = 0; i < radio.length; i++)
-                radio[i].checked = false;
+            document.getElementById('map').style.display = 'none'
+            document.getElementById('divOption').style.display = 'none'
 
             plotLinhas(false)
             plotParadas(false)
