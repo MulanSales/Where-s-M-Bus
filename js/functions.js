@@ -169,7 +169,12 @@ function plotEndereco(lat, lng) {
 
 function plotLinhas(enabled, lat, lng) {
     removeLayers(true, false);
-    document.getElementById('update-div').style.display = 'none';
+
+    if(!enabled && !window.paradas)
+        document.getElementById('update-div').style.display = 'none';
+
+    window.linhas = enabled
+
     if (!enabled) return
 
     document.getElementById('update-div').style.display = 'block';
@@ -232,6 +237,11 @@ function plotLinhas(enabled, lat, lng) {
 function plotParadas(enabled, lat, lng) {
 
     removeLayers(false, true);
+
+    if(!enabled && !window.linhas)
+        document.getElementById('update-div').style.display = 'none';
+
+    window.rotas = enabled
 
     document.getElementById('update-div').style.display = 'none';
     if (!enabled) return
