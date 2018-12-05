@@ -47,6 +47,7 @@
             }
 
             $points = substr($points, 0, -1);
+            if(empty($points)) $points = "[";
             $points .= "]";
 
             $jsonRes = "{ 
@@ -97,6 +98,7 @@
             }
 
             $points = substr($points, 0, -1);
+            if(empty($points)) $points = "[";
             $points .= "]";
 
             $jsonRes = "{\n\"id\": \"points\",
@@ -146,6 +148,7 @@
             }
 
             $points = substr($points, 0, -1);
+            if(empty($points)) $points = "[";
             $points .= "]";
 
             $jsonRes = "{ 

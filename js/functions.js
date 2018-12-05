@@ -243,8 +243,6 @@ function plotParadas(enabled, lat, lng) {
 
     if (!enabled) return
 
-    document.getElementById('update-div').style.display = 'none';
-
     var iniLat = lat
     var iniLng = lng
 
@@ -390,6 +388,7 @@ function onLocation(position, hide) {
         zoom: 12
     });
 
+
     var geocoder = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
         country: "br",
@@ -403,10 +402,16 @@ function onLocation(position, hide) {
         map.addSource('single-point', {
             "type": "geojson",
             "data": {
+         type: "Point",
+         coordinates: [longitude, latitude]
+    }}
+/*{
                 "type": "FeatureCollection",
                 "features": []
             }
-        });
+        }*/);
+    //map.getSource('single-point').setData(null);
+    //map.getSource('single-point').setData();
 
         map.addLayer({
             "id": "single",
@@ -427,8 +432,8 @@ function onLocation(position, hide) {
             latitude = ev.result.center[1];
 
             document.getElementById('update-div').style.display = 'none';
-            document.getElementById('map').style.display = 'none'
-            document.getElementById('divOption').style.display = 'none'
+            document.getElementById('map').style.display = 'block'
+            document.getElementById('divOption').style.display = 'block'
 
             plotLinhas(false)
             plotParadas(false)
@@ -451,6 +456,7 @@ if (navigator.geolocation) {
 }
 
 geolocation.on('geolocate', function(e) {
+
     map.flyTo({
         center: [longitude, latitude],
         zoom: 16 //set zoom
