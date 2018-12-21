@@ -47,9 +47,11 @@
             }
 
             $points = substr($points, 0, -1);
+            if(empty($points)) $points = "[";
             $points .= "]";
 
-            $jsonRes = "{ \"id\": \"bus\",
+            $jsonRes = "{ 
+                \"id\": \"bus\",
                 \"type\": \"symbol\",
                 \"source\": {
                     \"type\": \"geojson\",
@@ -64,7 +66,7 @@
                 }
             }";
 
-            return json_encode($jsonRes); 
+            return $jsonRes; 
         }
 
         public function makeBusLayerJson($pointsObject, $jsonLinha)
@@ -96,9 +98,10 @@
             }
 
             $points = substr($points, 0, -1);
+            if(empty($points)) $points = "[";
             $points .= "]";
 
-            $jsonRes = "{ \"id\": \"points\",
+            $jsonRes = "{\n\"id\": \"points\",
                 \"type\": \"symbol\",
                 \"source\": {
                     \"type\": \"geojson\",
@@ -113,7 +116,7 @@
                 }
             }";
 
-            return json_encode($jsonRes); 
+            return $jsonRes;
         }
 
         public function makeStopsLayer($stopsList)
@@ -123,11 +126,12 @@
 
             foreach($stopsList as $stop)
             {
+                error_log(print_r($stop, true));
                 $lat = $stop['latitude'];
                 $lon = $stop['longitude'];
-                $cod = $stop['codigo'];
+                $cod = $stop['id'] . "";
                 $end = $stop['endereco'];
-                $ref = $stop['referencia'];
+                $ref = $stop['descricao'];
 
                 $points .= "{
                     \"properties\": {
@@ -144,9 +148,11 @@
             }
 
             $points = substr($points, 0, -1);
+            if(empty($points)) $points = "[";
             $points .= "]";
 
-            $jsonRes = "{ \"id\": \"stops\",
+            $jsonRes = "{ 
+                \"id\": \"stops\",
                 \"type\": \"symbol\",
                 \"source\": {
                     \"type\": \"geojson\",
@@ -161,7 +167,7 @@
                 }
             }";
 
-            return json_encode($jsonRes); 
+            return $jsonRes; 
         }
     }
 

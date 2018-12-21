@@ -5,7 +5,7 @@
     <title>WHERE'S M'BUS? - Home</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js'></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
     <script type="text/javascript" src="js/functions.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css' rel='stylesheet' />
@@ -58,6 +58,12 @@
         NºUSP: 9277468<br>
         Sem.: 2º/2018
     </p>
+    <p id="rcorners">
+        <i class="fa fa-address-card-o"></i><br>
+        Nome: Hugo Boleta<br>
+        NºUSP:7650972<br>
+        Sem.: 2º/2018
+    </p>
 </div>
 
 <div id="update-div" hidden class="upt">
@@ -69,7 +75,7 @@
 
 <div class="footer">
     <p>ACH2077[2018] - Soluções Web Baseadas em Software Livre</p>
-</div>      
+</div>
 
 <script>
 
@@ -99,17 +105,19 @@ if (navigator.geolocation) {
             longitude = position.coords.longitude;
 
             map = new mapboxgl.Map({
-                container: 'map', 
-                style: 'mapbox://styles/mapbox/streets-v9', 
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v9',
                 center: [longitude, latitude],
                 zoom: 15
             });
+            map.on('load', function (){
 
-            map.flyTo({center: [longitude, latitude]});
+                map.flyTo({center: [longitude, latitude]});
 
-            map.addControl(new mapboxgl.NavigationControl());
+                map.addControl(new mapboxgl.NavigationControl());
 
-            plotEndereco(latitude, longitude);
+                plotEndereco(latitude, longitude);
+            })
         }
     );
 }

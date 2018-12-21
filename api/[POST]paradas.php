@@ -16,7 +16,6 @@ header("Content-Type: application/json; charset=UTF-8");
 * make the stack to be executed
 */
 
-$end = $_POST['endereco'];
 $iniLat = $_POST['latitude'];
 $iniLong = $_POST['longitude'];
 

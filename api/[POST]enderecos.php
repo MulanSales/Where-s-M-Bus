@@ -36,6 +36,12 @@ $result = $dbset->doSqlQuery($conn,
     WHERE endereco LIKE '%$end%'");
 $dbset->closeConnection($conn);
 
+if(!$result){
+    echo(mysqli_error($conn));
+    exit();
+}
+
+
 $array_values = array();
 
 $jsonRes = "[";
@@ -55,8 +61,8 @@ foreach($result as $value)
 $jsonRes = substr($jsonRes, 0, -1);
 $jsonRes .= "]";
 
-http_response_code(200);
-$jsonRes = json_encode($jsonRes);
+//http_response_code(200);
+//$jsonRes = json_encode($jsonRes);
 
 echo $jsonRes;
 

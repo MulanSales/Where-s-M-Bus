@@ -1,25 +1,69 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>WHERE'S M'BUS?</title>
-    <meta charset='utf-8' />
+    <meta http-equiv="Content-Language" content="br" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>WHERE'S M'BUS? - Home</title>
+    <link rel="shortcut-icon" href="favicon.ico" type="image/x-icon" />
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <link rel="stylesheet" type="text/css" href="/css/index.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js'></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
     <script type="text/javascript" src="js/functions.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.css' type='text/css' />
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" type="text/css" href="/css/home.css">
 </head>
+
 <body>
     <div class="wrap">
         <div class="logoIcon">
-                <img src="assets/imgs/gps.png" width="150" height="200">
-        </div>
-        <p class="textIcon">WHERE'S M'BUS?</p>
-        <div class="search">
-            <input type="text" id="initialInput" class="searchTerm" placeholder="Input first location address...">
-            <button type="submit" class="searchButton" onclick="setEndereco()">
-                <i class="fa fa-search"></i>
-            </button>
+            <img src="assets/imgs/gps.png" width="30" height="40">
+            <p class="textIcon">WHERE'S M'BUS?</p>
         </div>
     </div>
+
+    <div id="search" class="geocoder"></div>
+
+    <div id="divOption" class="opt">
+        <label class="container"> Mostrar Linhas
+            <input type="checkbox" onclick="plotLinhas(this.checked, latitude, longitude)" name="options">
+            <span class="checkmark"></span>
+        </label>
+        <label class="container"> Mostrar Paradas
+            <input type="checkbox" onclick="plotParadas(this.checked, latitude, longitude)" name="options">
+            <span class="checkmark"></span>
+        </label>
+    </div>
+
+    <div class="info">
+        <p id="rcorners">
+            <i class="fa fa-address-card-o"></i><br>
+            Nome: Luan Sales<br>
+            NºUSP: 9277468<br>
+            Sem.: 2º/2018
+        </p>
+        <p id="rcornersright">
+            <i class="fa fa-address-card-o"></i><br>
+            Nome: Hugo Boleta<br>
+            NºUSP: 7650972<br>
+            Sem.: 2º/2018
+        </p>
+    </div>
+
+    <div id="update-div" hidden class="upt">
+        <button class="btn" onclick="updateMap(latitude, longitude)"><i class="fa fa-refresh"></i> Atualizar</button>
+        <!--<button class="btn" onclick="centralizeMap(oLatitude, oLongitude)"><i class="fa fa-crosshairs"></i> Centralizar</button>-->
+    </div>
+
+    <div id='map'></div>
+
+    <div class="footer">
+        <p>ACH2077[2018] - Soluções Web Baseadas em Software Livre</p>
+    </div>
 </body>
+
 </html>
